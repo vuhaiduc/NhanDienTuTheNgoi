@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phát hiện tư thế ngồi thông minh</title>
+    <style>
+        /* Import font đẹp hơn */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #131A22, #2C3E50);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 34px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* Hiệu ứng Glassmorphism cho video */
+        .video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .video-container:hover {
+            transform: scale(1.04);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        /* Cảnh báo lỗi với hiệu ứng nổi bật */
+        #error-box {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 69, 58, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            transition: opacity 0.5s ease-in-out, transform 0.4s ease-in-out;
+            opacity: 0;
+            transform: translateY(30px);
+            text-align: center;
+        }
+
+        #error-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Nút tải lại phong cách Material Design */
+        .refresh-btn {
+            margin-top: 30px;
+            padding: 12px 28px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .refresh-btn:hover {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            transform: scale(1.07);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Thông tin nhóm - Di chuyển lên góc trái trên cùng */
+        .footer {
+            position: fixed;
+            top: 10px;
+            left: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            animation: glow 2s infinite alternate;
+        }
+
+        /* Hiệu ứng phát sáng nhẹ */
+        @keyframes glow {
+            from {
+                text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6);
+            }
+            to {
+                text-shadow: 0px 0px 14px rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        /* Responsive cho màn hình nhỏ */
+        @media (max-width: 768px) {
+            .video-container {
+                width: 90%;
+                height: auto;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .refresh-btn {
+                padding: 10px 22px;
+                font-size: 16px;
+            }
+
+            .footer {
+                font-size: 16px;
+                top: 5px;
+                left: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>🧑‍💻 Hệ thống phát hiện tư thế ngồi</h1>
+
+    <div class="video-container">
+        <img src="/video_feed" alt="Video Streaming">
+    </div>
+
+    <div id="error-box"></div>
+
+    <button class="refresh-btn" onclick="location.reload();">🔄 Tải lại</button>
+
+    <div class="footer">✨ Nhóm 5 - CNTT 16_04 ✨</div>
+
+    <script>
+        function updateErrorBox() {
+            fetch('/get_error')
+                .then(response => response.json())
+                .then(data => {
+                    let errorBox = document.getElementById("error-box");
+                    if (data.error_message) {
+                        errorBox.innerText = "⚠️ " + data.error_message;
+                        errorBox.classList.add("show");
+                    } else {
+                        errorBox.classList.remove("show");
+                    }
+                });
+        }
+        setInterval(updateErrorBox, 1000);
+    </script>
+</body>
+</html>
